@@ -52,6 +52,12 @@ class CatBreed: Identifiable {
 	}
 }
 
+extension CatBreed {
+	var imageUrl: String {
+		""
+	}
+}
+
 // A string represenation of the cat breed.
 extension CatBreed: CustomStringConvertible {
 	var description: String {
