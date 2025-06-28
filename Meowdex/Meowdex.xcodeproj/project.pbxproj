@@ -285,7 +285,7 @@
 		93C257772E0F11BB003C273E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 93C257582E0F11B9003C273E /* Meowdex */;
-			baseConfigurationReferenceRelativePath = App/Secrets.xcconfig;
+			baseConfigurationReferenceRelativePath = Resources/Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -351,7 +351,7 @@
 		93C257782E0F11BB003C273E /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 93C257582E0F11B9003C273E /* Meowdex */;
-			baseConfigurationReferenceRelativePath = App/Secrets.xcconfig;
+			baseConfigurationReferenceRelativePath = Resources/Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
