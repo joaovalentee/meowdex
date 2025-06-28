@@ -53,7 +53,6 @@ struct BreedListScreen: View {
 							
 							Text(breed.breed)
 								.fontWeight(.semibold)
-								.foregroundStyle(.primary)
 							
 							Spacer()
 							
@@ -63,6 +62,7 @@ struct BreedListScreen: View {
 					}
 				}
 			}
+			.foregroundStyle(.primary)
 			.navigationTitle("Cat Breeds")
 		}
     }
