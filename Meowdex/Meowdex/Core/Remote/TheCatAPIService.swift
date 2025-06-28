@@ -1,0 +1,72 @@
+//
+//  TheCatAPIService.swift
+//  Meowdex
+//
+//  Created by Johnnie on 27/06/2025.
+//
+
+import Foundation
+import OSLog
+
+fileprivate let logger = Logger(subsystem: "Meowdex", category: "TheCatAPIService")
+
+final class TheCatAPIService: CatBreedAPIService {
+	
+	private let session: URLSession
+	
+	init(
+		session: URLSession = .shared
+	){
+		self.session = session
+	}
+	
+	func fetchBreeds(
+		page: Int,
+		limit: Int = 12
+	) async throws -> [Breed] {
+		guard let request = ApiConstants.buildGetBreedsRequest(page: page, limit: limit) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		return try await session.get(for: request)
+	}
+	
+	func searchBreeds(
+		name: String
+	) async throws -> [Breed] {
+		guard let request = ApiConstants.buildGetSearchBreedsRequest(name: name) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		return try await session.get(for: request)
+	}
+	
+	func fetchFavorites(userId: String) async throws -> [Favorite] {
+		guard let request = ApiConstants.buildGetFavoritesRequest(userId: userId) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		return try await session.get(for: request)
+	}
+	
+	func addFavorite(imageId: String, userId: String) async throws {
+		guard let request = ApiConstants.buildPostFavoriteRequest(imageId: imageId, userId: userId) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		let _ : FavoritePOSTResponse = try await session.post(to: request)
+	}
+	
+	func removeFavorite(favoriteId: Int) async throws {
+		guard let request = ApiConstants.buildDeleteFavoriteRequest(favoriteId: favoriteId) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		let _ : FavoriteDELETEResponse = try await session.delete(for: request)
+	}
+}
