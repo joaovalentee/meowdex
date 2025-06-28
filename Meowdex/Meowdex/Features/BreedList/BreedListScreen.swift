@@ -10,6 +10,7 @@ import SwiftData
 
 struct BreedListScreen: View {
 	
+	@State private var navigation: Navigation = Navigation()
 	@State private var viewModel: BreedListViewModel = BreedListViewModel()
 	
 	private var breeds: [CatBreed] {
@@ -21,7 +22,7 @@ struct BreedListScreen: View {
 	}
 	
     var body: some View {
-		NavigationStack {
+		NavigationStack(path: $navigation.path) {
 			List {
 				if viewModel.isLoading {
 					LoadingSection()					
@@ -30,7 +31,7 @@ struct BreedListScreen: View {
 				Section {
 					ForEach(breeds) { breed in
 						Button {
-							
+							navigation.push(.details(breed))
 						} label: {
 							HStack(spacing: 16) {
 								if let imageUrl = breed.imageUrl {
@@ -98,6 +99,9 @@ struct BreedListScreen: View {
 			.listSectionSpacing(6)
 			.foregroundStyle(.primary)
 			.navigationTitle("Cat Breeds")
+			.navigationDestination(for: NavigationOptions.self) { page in
+				page.viewForPage()
+			}
 			.refreshable {
 				await viewModel.refreshBreeds()
 			}
