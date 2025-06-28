@@ -17,6 +17,8 @@ struct ApiConstants {
 	static let apiQueryImageLabel: String = "attach_image"
 	static let apiQueryUserIdLabel: String = "sub_id"
 	
+	static let breedsPageLimit: Int = 12
+	
 	static func buildGetBreedsRequest(
 		page: Int,
 		limit: Int

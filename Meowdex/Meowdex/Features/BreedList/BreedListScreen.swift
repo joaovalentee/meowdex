@@ -10,8 +10,11 @@ import SwiftData
 
 struct BreedListScreen: View {
 	
-	@Query(sort: \CatBreed.breed)
-	private var breeds: [CatBreed]
+	@State private var viewModel: BreedListViewModel = BreedListViewModel()
+	
+	private var breeds: [CatBreed] {
+		viewModel.breeds
+	}
 	
 	private func ImageShape() -> RoundedRectangle {
 		return RoundedRectangle(cornerRadius: 18)
@@ -20,19 +23,44 @@ struct BreedListScreen: View {
     var body: some View {
 		NavigationStack {
 			List {
-				ForEach(breeds) { breed in
-					Button {
-						
-					} label: {
-						HStack(spacing: 16) {
-							AsyncImage(url: URL(string: breed.imageUrl)) { phase in
-								if let image = phase.image {
-									image
-										.resizable()
-										.aspectRatio(contentMode: .fill)
-										.frame(width: 55, height: 55, alignment: .top)
-										.clipShape(ImageShape())
-								} else if phase.error != nil {
+				if viewModel.isLoading {
+					LoadingSection()					
+				}
+				
+				Section {
+					ForEach(breeds) { breed in
+						Button {
+							
+						} label: {
+							HStack(spacing: 16) {
+								if let imageUrl = breed.imageUrl {
+									AsyncImage(url: URL(string: imageUrl)) { phase in
+										if let image = phase.image {
+											image
+												.resizable()
+												.aspectRatio(contentMode: .fill)
+												.frame(width: 55, height: 55, alignment: .top)
+												.clipShape(ImageShape())
+										} else if phase.error != nil {
+											ImageShape()
+												.fill(.secondary)
+												.frame(width: 55, height: 55, alignment: .top)
+												.clipShape(ImageShape())
+												.overlay {
+													Image(systemName: "photo")
+												}
+										} else {
+											ImageShape()
+												.fill(.secondary)
+												.overlay {
+													ProgressView()
+														.tint(.primary)
+												}
+										}
+									}
+									.frame(width: 55, height: 55)
+									
+								} else {
 									ImageShape()
 										.fill(.secondary)
 										.frame(width: 55, height: 55, alignment: .top)
@@ -40,32 +68,54 @@ struct BreedListScreen: View {
 										.overlay {
 											Image(systemName: "photo")
 										}
-								} else {
-									ImageShape()
-										.fill(.secondary)
-										.overlay {
-											ProgressView()
-												.tint(.primary)
-										}
 								}
-							}
-							.frame(width: 55, height: 55)
-							
-							Text(breed.breed)
-								.fontWeight(.semibold)
-							
-							Spacer()
-							
-							BreedFavoriteButton(breed: breed)
+								
+								Text(breed.breed)
+									.fontWeight(.semibold)
+								
+								Spacer()
+								
+								BreedFavoriteButton(isFavourite: viewModel.isFavourite(breed)) {
+									viewModel.toggleFavourite(for: breed)
+								}
 								.font(.title2)
+							}
+						}
+						.task {
+							if let index = breeds.firstIndex(of: breed),
+							   index == breeds.count - 5 {
+								print("Item \(index) appeared — loading next page")
+								await viewModel.loadNextPage()
+							}
 						}
 					}
 				}
+				
+				if viewModel.isLoadingMore {
+					LoadingSection()
+				}
 			}
+			.listSectionSpacing(6)
 			.foregroundStyle(.primary)
 			.navigationTitle("Cat Breeds")
+			.refreshable {
+				await viewModel.refreshBreeds()
+			}
 		}
     }
+}
+
+extension BreedListScreen {
+	@ViewBuilder
+	private func LoadingSection() -> some View {
+		Section {
+			ProgressView()
+				.tint(.primary)
+				.frame(maxWidth: .infinity)
+		}
+		.listRowBackground(Color.clear)
+		.listRowInsets(EdgeInsets())
+	}
 }
 
 #Preview {
