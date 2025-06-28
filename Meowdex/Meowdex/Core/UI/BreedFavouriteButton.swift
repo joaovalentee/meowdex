@@ -9,18 +9,29 @@ import SwiftUI
 
 struct BreedFavoriteButton: View {
 	private let isFavourite: Bool
+	private let onClick: () -> Void
 	
 	init(breed: CatBreed) {
 		isFavourite = false
+		self.onClick = { }
 	}
 	
 	init(favourite: FavouriteBreed) {
 		isFavourite = true
+		self.onClick = { }
+	}
+	
+	init(
+		isFavourite: Bool,
+		onClick: @escaping () -> Void
+	) {
+		self.isFavourite = isFavourite
+		self.onClick = onClick
 	}
 	
 	var body: some View {
 		Button {
-			
+			onClick()
 		} label: {
 			FavoriteButtonLabel(isFavourite: isFavourite)
 		}
