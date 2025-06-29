@@ -3,29 +3,30 @@ Meowdex is an iOS app developed in SwiftUI to explore and learn about cat breeds
 
 ## Table of Contents
 
-- [Problem Description](#problem-description)
-- [Solution](#solution)
+- [Features](#problem-description)
+- [Tech Stack](#solution)
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
 - [Technical Details](#technical-details)
-- [Trade-offs](#trade-offs)
+- [Improvements](#improvments)
 
-## ✨ Features
+## Features
 - Browse a list of cat breeds with images with infinite scroll.
 - View detailed information for each breed, including temperament, origin, and description.
 - Favorites system.
-- TCA Architecture.
 - Built entirely with Swift and SwiftUI.
 - Offline support.
 
-## 🚀 Tech Stack
+## Tech Stack
 - Swift
 - SwiftUI   
 - [TheCatAPI](https://thecatapi.com/)
 - SwiftData
+- [Kingfisher](https://github.com/onevcat/Kingfisher)
 
 ## Prerequisites
-- iOS device or simulator running iOS 17.0 or later.
-- Xcode 15.0 or later.
+- iOS device or simulator running iOS 18.0 or later.
+- Xcode 16.0 or later.
 - TheCatAPI API key (available from [TheCatAPI](https://thecatapi.com/)).
+
+## Technical Details
+To run the code you need to create the 'Secrets.xcconfig' file inside the 'Resources' folder with an API_KEY to access the API.
