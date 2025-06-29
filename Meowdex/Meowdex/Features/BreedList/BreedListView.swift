@@ -13,6 +13,7 @@ struct BreedListView: View {
 	@Environment(Navigation.self) private var navigation
 	
 	@State private var viewModel: BreedListViewModel
+	@FocusState private var isSearching: Bool
 	
 	init(modelContext: ModelContext) {
 		_viewModel = State(initialValue: BreedListViewModel(modelContext: modelContext))
@@ -27,49 +28,84 @@ struct BreedListView: View {
 	}
 	
     var body: some View {
-		List {
-			if viewModel.isLoading {
-				LoadingSection()
-			}
-			
-			Section {
-				ForEach(breeds) { breed in
-					BreedListItem(
-						breed: breed,
-						isFavorite: viewModel.isFavourite(breed),
-						toggleFavoritAction: {
-							Task {
-								await viewModel.toggleFavourite(for: breed)
-							}
-						},
-						action: {
-							navigation.push(.details(breed))
-						}
-					)
-					.task {
-						if let index = breeds.firstIndex(of: breed),
-						   index == breeds.count - 5 {
-							print("Item \(index) appeared — loading next page")
-							await viewModel.loadNextPage()
-						}
-					}
+		Group {
+			if isSearching {
+				List {
+					BreedListSection(sectionName: "search results", viewModel.filteredBreeds, isLoading: viewModel.isLoadingSearch)
 				}
+			} else {
+				BreedList()
 			}
+		}
+		.foregroundStyle(.primary)
+		.navigationTitle("Cat Breeds")
+		.navigationDestination(for: NavigationOptions.self) { page in
+			page.viewForPage()
+		}
+		.searchable(text: $viewModel.searchQuery, placement: .navigationBarDrawer, prompt: "Search cat breeds")
+		.searchFocused($isSearching)
+		.onChange(of: isSearching) { oldValue, newValue in
+			if !newValue {
+				viewModel.clearSearch()
+			}
+		}
+    }
+}
+
+extension BreedListView {
+	@ViewBuilder
+	private func BreedList() -> some View {
+		List {
+			BreedListSection(breeds, isLoading: viewModel.isLoading)
 			
 			if viewModel.isLoadingMore {
 				LoadingSection()
 			}
 		}
 		.listSectionSpacing(6)
-		.foregroundStyle(.primary)
-		.navigationTitle("Cat Breeds")
-		.navigationDestination(for: NavigationOptions.self) { page in
-			page.viewForPage()
-		}
 		.refreshable {
 			await viewModel.refreshBreeds()
 		}
-    }
+	}
+	
+	@ViewBuilder
+	private func BreedListSection(
+		sectionName: String? = nil,
+		_ breeds: [CatBreed],
+		isLoading: Bool
+	) -> some View {
+		Section {
+			if isLoading {
+				LoadingSection()
+			}
+			
+			ForEach(breeds) { breed in
+				BreedListItem(
+					breed: breed,
+					isFavorite: viewModel.isFavourite(breed),
+					toggleFavoritAction: {
+						Task {
+							await viewModel.toggleFavourite(for: breed)
+						}
+					},
+					action: {
+						navigation.push(.details(breed))
+					}
+				)
+				.task {
+					if let index = breeds.firstIndex(of: breed),
+					   index == breeds.count - 5 {
+						print("Item \(index) appeared — loading next page")
+						await viewModel.loadNextPage()
+					}
+				}
+			}
+		} header: {
+			if let sectionName {
+				Text(sectionName)
+			}
+		}
+	}
 }
 
 #Preview {

@@ -55,13 +55,12 @@ struct BreedDetailsView: View {
 		}
 		.navigationTitle(breed.breed)
 		.toolbar {
-			ToolbarItem(placement: .topBarTrailing) {
+			ToolbarItem(placement: .destructiveAction) {
 				BreedFavoriteButton(isFavourite: viewModel.isFavorite) {
 					viewModel.toggleFavourite(for: breed)
 				}
 				.font(.title2)
 			}
-			.foregroundStyle(.red)
 		}
     }
 }
