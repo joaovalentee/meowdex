@@ -9,16 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct FavoriteBreedListView: View {
-	@Environment(Navigation.self) private var navigation
+	@Environment(Navigation<FavoriteNavigationOptions>.self) private var navigation
 	
 	@State private var viewModel: FavoriteBreedListViewModel
 	
-	init(modelContext: ModelContext) {
-		_viewModel = State(initialValue: FavoriteBreedListViewModel(modelContext: modelContext))
-	}
-	
-	private var favorites: [FavouriteBreed] {
-		viewModel.favorites
+	init(store: CatBreedStore) {
+		_viewModel = State(initialValue: FavoriteBreedListViewModel(store: store))
 	}
 
 	var body: some View {
@@ -27,30 +23,63 @@ struct FavoriteBreedListView: View {
 				LoadingSection()
 			}
 			
-			Section {
-				ForEach(favorites) { breed in
-					BreedListItem(
-						favoriteBreed: breed,
-						toggleFavoritAction: {
-							Task {
-//								await viewModel.removeFavorite(breed)
-							}
-						},
-						action: {
-//							navigation.push(.details(breed))
+			if !viewModel.favorites.isEmpty {
+				if let averageLifespan = viewModel.averageLifespan {
+					Section {
+						VStack {
+							Text("\(averageLifespan)")
+								.font(.title)
+								.fontWeight(.bold)
+							Text("average lifespan (years)")
+								.font(.caption)
+								.textCase(.uppercase)
+								.foregroundStyle(.secondary)
 						}
-					)
+						.frame(maxWidth: .infinity)
+					}
+					.listRowBackground(Color.clear)
+					.listRowInsets(EdgeInsets())
 				}
+				
+				Section {
+					ForEach(viewModel.favorites) { breed in
+						BreedListItem(
+							favoriteBreed: breed,
+							toggleFavoritAction: {
+								await viewModel.removeFavorite(id: breed.id, imageId: breed.imageId)
+							},
+							action: {
+								navigation.push(.details(breed))
+							}
+						)
+					}
+				}
+			} else if !viewModel.isLoading {
+				Section {
+					Text("No favorites yet")
+						.font(.title3)
+						.fontWeight(.semibold)
+						.frame(maxWidth: .infinity)
+				}
+				.listRowBackground(Color.clear)
 			}
 		}
-		.listSectionSpacing(6)
 		.foregroundStyle(.primary)
 		.navigationTitle("Favorites")
-		.navigationDestination(for: NavigationOptions.self) { page in
-			page.viewForPage()
-		}
 		.refreshable {
-//			await viewModel.refreshBreeds()
+			await viewModel.refreshFavorites()
+		}
+		.alert("Error", isPresented: viewModel.hasError) {
+			Button("OK", role: .cancel) {
+				viewModel.errorMessage = nil
+			}
+		} message: {
+			Text(viewModel.errorMessage ?? "Something went wrong")
+		}
+		.onAppear {
+			Task {
+				await viewModel.syncPendingActions()
+			}
 		}
 	}
 }

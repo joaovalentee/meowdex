@@ -10,21 +10,76 @@ import SwiftData
 
 class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 	
+	
 	private let context: ModelContext
 	
 	init(context: ModelContext) {
 		self.context = context
 	}
 	
-	func loadFavoriteIDs() async -> [String:Int] {
+	func loadFavoriteIDs() -> [String:Int] {
+		guard let favourites = loadFavorites() else { return [:] }
+		return Dictionary(uniqueKeysWithValues: favourites.map { ($0.breedId, $0.id) })
+	}
+	
+	func loadFavorites() -> [FavouriteBreed]? {
 		do {
-			let descriptor = FetchDescriptor<FavouriteBreed>()
-			let favourites = try context.fetch(descriptor)
-			return Dictionary(uniqueKeysWithValues: favourites.map { ($0.id, $0.favouriteId) })
+			let descriptor = FetchDescriptor<FavouriteBreed>(sortBy: [.init(\.breed, order: .forward)])
+			return try context.fetch(descriptor)
 		} catch {
-			print("Failed to fetch favourites: \(error)")
-			return [:]
+			print("Failed to fetch favorites: \(error)")
+			return nil
 		}
+	}
+	
+	func saveFavorites(_ favorites: [FavouriteBreed]) {
+		for favorite in favorites {
+			context.insert(favorite)
+		}
+		saveContext()
+	}
+	
+	func savePendingAction(_ action: FavoritePendingAction) throws {
+		print("Saving action \(action)")
+		context.insert(action)
+		print("Inserted action")
+		try context.save()
+		print("Saved action")
+	}
+	
+	func loadPendingActions() throws -> [FavoritePendingAction]? {
+		print("Loading pending actions...")
+		let descriptor = FetchDescriptor<FavoritePendingAction>()
+		let actions = try context.fetch(descriptor)
+		print("Loaded \(actions.count) pending actions...")
+		return actions
+	}
+	
+	func clearPendingActions() {
+		guard let actions = try? loadPendingActions() else { return }
+		for action in actions {
+			context.delete(action)
+		}
+		saveContext()
+	}
+	
+	func deletePendingAction(id: String) {
+		let descriptor = FetchDescriptor<FavoritePendingAction>(predicate: #Predicate { $0.id == id })
+		do {
+			let results = try context.fetch(descriptor)
+			results.forEach { context.delete($0) }
+			saveContext()
+		} catch {
+			print("Failed to delete pending action with id \(id): \(error)")
+		}
+	}
+	
+	func clearFavorites() {
+		guard let favorites = loadFavorites() else { return }
+		for favorite in favorites {
+			context.delete(favorite)
+		}
+		saveContext()
 	}
 	
 	func saveFavorite(_ favorite: FavouriteBreed) {
@@ -33,13 +88,13 @@ class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 	}
 	
 	func removeFavorite(id: Int) {
-		let descriptor = FetchDescriptor<FavouriteBreed>(predicate: #Predicate { $0.favouriteId == id })
+		let descriptor = FetchDescriptor<FavouriteBreed>(predicate: #Predicate { $0.id == id })
 		do {
 			let results = try context.fetch(descriptor)
 			results.forEach { context.delete($0) }
 			saveContext()
 		} catch {
-			print("Failed to delete favourite with id \(id): \(error)")
+			print("Failed to delete favorite with id \(id): \(error)")
 		}
 	}
 	
@@ -50,10 +105,11 @@ class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 			let data = try context.fetch(descriptor)
 			return !data.isEmpty
 		} catch {
-			print("Failed to delete favourite with id \(imageId): \(error)")
+			print("Failed to delete favorite with id \(imageId): \(error)")
 			return false
 		}
 	}
+	
 	
 	private func saveContext() {
 		do {

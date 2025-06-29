@@ -8,14 +8,25 @@
 import SwiftUI
 
 struct BreedDetailsScreen: View {
-	@Environment(\.modelContext) private var modelContext
+	@EnvironmentObject private var store: CatBreedStore
 	
 	let breed: CatBreed
 
     var body: some View {
-		BreedDetailsView(breed: breed, context: modelContext)
+		BreedDetailsView(breed: breed, store: store)
     }
 }
+
+struct FavoriteDetailsScreen: View {
+	@EnvironmentObject private var store: CatBreedStore
+	
+	let favorite: FavouriteBreed
+	
+	var body: some View {
+		BreedDetailsView(favorite: favorite, store: store)
+	}
+}
+
 
 #Preview {
 	NavigationStack {

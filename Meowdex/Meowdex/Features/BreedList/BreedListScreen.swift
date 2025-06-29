@@ -9,14 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct BreedListScreen: View {
-	@Environment(\.modelContext) private var modelContext
+	@EnvironmentObject private var store: CatBreedStore
 	
-	@State private var navigation: Navigation = Navigation()
+	@State private var navigation: Navigation<CatBreedNavigationOptions> = Navigation()
 	
     var body: some View {
 		NavigationStack(path: $navigation.path) {
-			BreedListView(modelContext: modelContext)
+			BreedListView(store: store)
 				.environment(navigation)
+				.navigationDestination(for: CatBreedNavigationOptions.self) { page in
+					page.viewForPage()
+				}
 		}
     }
 }

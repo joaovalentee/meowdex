@@ -9,7 +9,7 @@ import SwiftUI
 import Observation
 
 @Observable
-final class Navigation {
+final class Navigation<NavigationOptions: Hashable> {
 	var path: NavigationPath = NavigationPath()
 	
 	/// Adds a view to the stack
@@ -28,14 +28,4 @@ final class Navigation {
 	}
 }
 
-enum NavigationOptions: Hashable {
-	case details(CatBreed)
-	
-	@ViewBuilder
-	func viewForPage() -> some View {
-		switch self {
-			case .details(let cat):
-				BreedDetailsScreen(breed: cat)
-		}
-	}
-}
+

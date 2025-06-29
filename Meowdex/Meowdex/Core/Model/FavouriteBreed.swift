@@ -12,8 +12,8 @@ import SwiftData
 /// show the favorites list independent from the list of cat breeds.
 @Model
 class FavouriteBreed {
-	/// A unique identifier associated with cat breed.
-	@Attribute(.unique) var id: String
+	/// A unique identifier associated with the favorite
+	@Attribute(.unique) var id: Int
 	
 	/// The name of the cat breed
 	var breed: String
@@ -31,30 +31,35 @@ class FavouriteBreed {
 	var maxLifespan: Int
 	
 	/// The id of the image of the cat breed
-	var imageId: String?
+	var imageId: String
 	
-	/// The id of the favourite
-	var favouriteId: Int
+	/// The id of the image of the cat breed
+	var imageUrl: String?
+	
+	/// A unique identifier associated with cat breed.
+	var breedId: String
 	
 	/// Creates a new cat breed from the specified values.
 	init(
-		id: String,
-		favouriteId: Int,
+		id: Int,
+		breedId: String,
 		breed: String,
 		origin: String,
 		temperament: [Temperament],
 		details: String,
 		maxLifespan: Int,
-		imageId: String?
+		imageId: String,
+		imageUrl: String?
 	) {
 		self.id = id
-		self.favouriteId = favouriteId
+		self.breedId = breedId
 		self.breed = breed
 		self.origin = origin
 		self.temperament = temperament
 		self.details = details
 		self.maxLifespan = maxLifespan
 		self.imageId = imageId
+		self.imageUrl = imageUrl
 	}
 	
 	convenience init(
@@ -62,14 +67,15 @@ class FavouriteBreed {
 		with breed: CatBreed
 	) {
 		self.init(
-			id: breed.id,
-			favouriteId: favoriteId,
+			id: favoriteId,
+			breedId: breed.id,
 			breed: breed.breed,
 			origin: breed.origin,
 			temperament: breed.temperament,
 			details: breed.details,
 			maxLifespan: breed.maxLifespan,
-			imageId: breed.imageId
+			imageId: breed.imageId,
+			imageUrl: breed.imageUrl
 		)
 	}
 	

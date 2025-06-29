@@ -14,50 +14,58 @@ struct BreedDetailsView: View {
 	
 	init(
 		breed: CatBreed,
-		context: ModelContext
+		store: CatBreedStore
 	) {
 		_viewModel = State(
 			initialValue: BreedDetailsViewModel(
 				breed: breed,
-				favoritePersistenceService: FavoritePersistenceService(context: context)
+				store: store
 			)
 		)
 	}
 	
-	private var breed : CatBreed {
-		viewModel.breed
+	init(
+		favorite: FavouriteBreed,
+		store: CatBreedStore
+	) {
+		_viewModel = State(
+			initialValue: BreedDetailsViewModel(
+				favorite: favorite,
+				store: store
+			)
+		)
 	}
 	
     var body: some View {
 		List {
 			Section {
-				BreedImage(imageUrl: breed.imageUrl)
+				BreedImage(imageUrl: viewModel.imageUrl)
 					.frame(height: 400, alignment: .top)
 					.listRowInsets(EdgeInsets())
 			}
 			
 			Section("Origin") {
-				Text(breed.origin)
+				Text(viewModel.origin)
 					.textSelection(.enabled)
 			}
 			
 			Section("Temperament") {
-				ForEach(breed.temperament) { temperament in
+				ForEach(viewModel.temperament) { temperament in
 					Text(temperament.name)
 						.textSelection(.enabled)
 				}
 			}
 			
 			Section("Description") {
-				Text(breed.details)
+				Text(viewModel.description)
 					.textSelection(.enabled)
 			}
 		}
-		.navigationTitle(breed.breed)
+		.navigationTitle(viewModel.name)
 		.toolbar {
 			ToolbarItem(placement: .destructiveAction) {
 				BreedFavoriteButton(isFavourite: viewModel.isFavorite) {
-					viewModel.toggleFavourite(for: breed)
+					await viewModel.toggleFavorite()
 				}
 				.font(.title2)
 			}

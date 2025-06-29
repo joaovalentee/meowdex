@@ -10,13 +10,13 @@ import SwiftData
 
 struct BreedListView: View {
 	
-	@Environment(Navigation.self) private var navigation
+	@Environment(Navigation<CatBreedNavigationOptions>.self) private var navigation
 	
 	@State private var viewModel: BreedListViewModel
 	@FocusState private var isSearching: Bool
 	
-	init(modelContext: ModelContext) {
-		_viewModel = State(initialValue: BreedListViewModel(modelContext: modelContext))
+	init(store: CatBreedStore) {
+		_viewModel = State(initialValue: BreedListViewModel(store: store))
 	}
 	
 	private var breeds: [CatBreed] {
@@ -39,9 +39,6 @@ struct BreedListView: View {
 		}
 		.foregroundStyle(.primary)
 		.navigationTitle("Cat Breeds")
-		.navigationDestination(for: NavigationOptions.self) { page in
-			page.viewForPage()
-		}
 		.searchable(text: $viewModel.searchQuery, placement: .navigationBarDrawer, prompt: "Search cat breeds")
 		.searchFocused($isSearching)
 		.onChange(of: isSearching) { oldValue, newValue in
@@ -84,9 +81,7 @@ extension BreedListView {
 					breed: breed,
 					isFavorite: viewModel.isFavourite(breed),
 					toggleFavoritAction: {
-						Task {
-							await viewModel.toggleFavourite(for: breed)
-						}
+						await viewModel.toggleFavorite(for: breed)
 					},
 					action: {
 						navigation.push(.details(breed))

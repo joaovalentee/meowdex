@@ -21,6 +21,9 @@ final class Temperament {
 	
 	@Relationship(deleteRule: .cascade, inverse: \CatBreed.temperament)
 	var breeds: [CatBreed] = []
+	
+	@Relationship(deleteRule: .cascade, inverse: \FavouriteBreed.temperament)
+	var favorites: [FavouriteBreed] = []
 }
 
 extension Temperament: Identifiable {

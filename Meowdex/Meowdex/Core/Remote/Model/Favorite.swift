@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Favorite: Decodable {
+struct Favorite: Decodable, Hashable {
 	let id: Int
 	let userId: String
 	let imageId: String
@@ -15,7 +15,7 @@ struct Favorite: Decodable {
 	let createdAt: String
 	let image: ImageData
 	
-	struct ImageData: Decodable {
+	struct ImageData: Decodable, Hashable {
 		let id: String
 		let url: String
 	}
