@@ -77,7 +77,9 @@ struct BreedListScreen: View {
 								Spacer()
 								
 								BreedFavoriteButton(isFavourite: viewModel.isFavourite(breed)) {
-									viewModel.toggleFavourite(for: breed)
+									Task {
+										await viewModel.toggleFavourite(for: breed)
+									}
 								}
 								.font(.title2)
 							}

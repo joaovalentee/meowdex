@@ -52,13 +52,15 @@ final class TheCatAPIService: CatBreedAPIService {
 		return try await session.get(for: request)
 	}
 	
-	func addFavorite(imageId: String, userId: String) async throws {
+	func addFavorite(imageId: String, userId: String) async throws -> Int {
 		guard let request = ApiConstants.buildPostFavoriteRequest(imageId: imageId, userId: userId) else {
 			logger.error("Failed to format URL")
 			throw MeowError.networkError(.badURL)
 		}
 		
-		let _ : FavoritePOSTResponse = try await session.post(to: request)
+		let favorite: FavoritePOSTResponse = try await session.post(to: request)
+		
+		return favorite.id
 	}
 	
 	func removeFavorite(favoriteId: Int) async throws {

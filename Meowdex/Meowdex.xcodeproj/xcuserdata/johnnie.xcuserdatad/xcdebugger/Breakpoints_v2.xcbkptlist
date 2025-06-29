@@ -7,33 +7,103 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3E7C8601-5F0C-4E64-8BA9-C4C463A22794"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../../../../../var/folders/4q/ylds53ns6dz88n1dk88xkw6m0000gq/T/swift-generated-sources/@__swiftmacro_7Meowdex18BreedListViewModelC11searchQuery18ObservationTrackedfMp_.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1"
-            endingLineNumber = "1"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CD9C3BF8-D1B5-4C0F-B897-6ECE0F40964F"
+            uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Meowdex/Features/BreedList/BreedListViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "loadNextPage()"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "toggleFavourite(for:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - b7f247874ef1f2b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - b7f247874ef1f2b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - e4bf8680688e8ebb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - 186bc18d12244a85"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - 678d210ba0f0a884"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+               <Location
+                  uuid = "B24989ED-4DAF-4ADB-9BEC-6540B90B7E64 - 4dd700b63fbd0687"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for Meowdex.BreedListViewModel.toggleFavourite(for: Meowdex.CatBreed) async -&gt; ()"
+                  moduleName = "Meowdex.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/johnnie/GitHub/joaovalentee/meowdex/Meowdex/Meowdex/Features/BreedList/BreedListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
