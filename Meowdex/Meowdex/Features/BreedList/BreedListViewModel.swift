@@ -24,7 +24,9 @@ class BreedListViewModel {
 	private(set) var isLoading: Bool = true
 	private(set) var isLoadingMore: Bool = false
 	private(set) var errorMessage: String? = nil
-	private(set) var favouriteIDs: Set<String> = []
+	private(set) var favouriteIDs: [String:Int] = [:]
+	
+	private var userId: String = "aabbccdd"
 	
 	// MARK: - Dependencies
 	private let apiService: CatBreedAPIService
@@ -98,18 +100,30 @@ class BreedListViewModel {
 		isLoadingMore = false
 	}
 	
-	func toggleFavourite(for breed: CatBreed) {
-		if favouriteIDs.contains(breed.id) {
-			favouriteIDs.remove(breed.id)
-//			persistenceService.removeFavourite(id: breed.id)
-		} else {
-			favouriteIDs.insert(breed.id)
-//			persistenceService.saveFavourite(id: breed.id)
+	func toggleFavourite(for breed: CatBreed) async {
+		if let imageId = breed.imageId {
+			if let favouriteId = favouriteIDs[breed.id] {
+				do {
+					try await apiService.removeFavorite(favoriteId: favouriteId)
+					favouriteIDs.removeValue(forKey: breed.id)
+//					persistenceService.removeFavourite(id: breed.id)
+				} catch {
+					
+				}
+			} else {
+				do {
+					let id = try await apiService.addFavorite(imageId: imageId, userId: userId)
+					favouriteIDs[breed.id] = id
+//					persistenceService.saveFavourite(id: breed.id)
+				} catch {
+					
+				}
+			}
 		}
 	}
 	
 	func isFavourite(_ breed: CatBreed) -> Bool {
-		favouriteIDs.contains(breed.id)
+		favouriteIDs.keys.contains(breed.id)
 	}
 	
 	// MARK: - Private Methods

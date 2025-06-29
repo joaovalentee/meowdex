@@ -33,9 +33,13 @@ class FavouriteBreed {
 	/// The id of the image of the cat breed
 	var imageId: String
 	
+	/// The id of the favourite
+	var favouriteId: Int
+	
 	/// Creates a new cat breed from the specified values.
 	init(
 		id: String,
+		favouriteId: Int,
 		breed: String,
 		origin: String,
 		temperament: [Temperament],
@@ -44,6 +48,7 @@ class FavouriteBreed {
 		imageId: String
 	) {
 		self.id = id
+		self.favouriteId = favouriteId
 		self.breed = breed
 		self.origin = origin
 		self.temperament = temperament

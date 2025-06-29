@@ -24,7 +24,7 @@ protocol CatBreedAPIService {
 	func addFavorite(
 		imageId: String,
 		userId: String
-	) async throws
+	) async throws -> Int
 	
 	func removeFavorite(
 		favoriteId: Int
