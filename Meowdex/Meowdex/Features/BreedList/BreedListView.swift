@@ -34,60 +34,18 @@ struct BreedListView: View {
 			
 			Section {
 				ForEach(breeds) { breed in
-					Button {
-						navigation.push(.details(breed))
-					} label: {
-						HStack(spacing: 16) {
-							if let imageUrl = breed.imageUrl {
-								AsyncImage(url: URL(string: imageUrl)) { phase in
-									if let image = phase.image {
-										image
-											.resizable()
-											.aspectRatio(contentMode: .fill)
-											.frame(width: 55, height: 55, alignment: .top)
-											.clipShape(ImageShape())
-									} else if phase.error != nil {
-										ImageShape()
-											.fill(.secondary)
-											.frame(width: 55, height: 55, alignment: .top)
-											.clipShape(ImageShape())
-											.overlay {
-												Image(systemName: "photo")
-											}
-									} else {
-										ImageShape()
-											.fill(.secondary)
-											.overlay {
-												ProgressView()
-													.tint(.primary)
-											}
-									}
-								}
-								.frame(width: 55, height: 55)
-								
-							} else {
-								ImageShape()
-									.fill(.secondary)
-									.frame(width: 55, height: 55, alignment: .top)
-									.clipShape(ImageShape())
-									.overlay {
-										Image(systemName: "photo")
-									}
+					BreedListItem(
+						breed: breed,
+						isFavorite: viewModel.isFavourite(breed),
+						toggleFavoritAction: {
+							Task {
+								await viewModel.toggleFavourite(for: breed)
 							}
-							
-							Text(breed.breed)
-								.fontWeight(.semibold)
-							
-							Spacer()
-							
-							BreedFavoriteButton(isFavourite: viewModel.isFavourite(breed)) {
-								Task {
-									await viewModel.toggleFavourite(for: breed)
-								}
-							}
-							.font(.title2)
+						},
+						action: {
+							navigation.push(.details(breed))
 						}
-					}
+					)
 					.task {
 						if let index = breeds.firstIndex(of: breed),
 						   index == breeds.count - 5 {
@@ -112,19 +70,6 @@ struct BreedListView: View {
 			await viewModel.refreshBreeds()
 		}
     }
-}
-
-extension BreedListView {
-	@ViewBuilder
-	private func LoadingSection() -> some View {
-		Section {
-			ProgressView()
-				.tint(.primary)
-				.frame(maxWidth: .infinity)
-		}
-		.listRowBackground(Color.clear)
-		.listRowInsets(EdgeInsets())
-	}
 }
 
 #Preview {

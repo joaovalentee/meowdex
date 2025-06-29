@@ -10,7 +10,13 @@ import SwiftData
 
 struct ContentView: View {
     var body: some View {
-		BreedListScreen()
+		TabView {
+			ForEach(AppScreen.allCases) { screen in
+				screen.destination()
+					.tag(screen)
+					.tabItem { screen.label }
+			}
+		}
     }
 }
 
