@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class FavoritePendingAction {
+final class FavoritePendingAction: Identifiable {
 	@Attribute(.unique)
 	var id: String
 	var breedId: String
@@ -28,7 +28,22 @@ final class FavoritePendingAction {
 	}
 }
 
-enum FavoriteActionType: Codable {
+extension FavoritePendingAction : CustomStringConvertible {
+	var description: String {
+		"\(id) \(breedId) \(action.id) \(timestamp)"
+	}
+}
+
+enum FavoriteActionType: Identifiable, Codable {
 	case markFavorite(String)
 	case unmarkFavorite(Int)
+	
+	var id: String {
+		switch self {
+			case .markFavorite(let breeId):
+				return "markFavorite(\(breeId))"
+			case .unmarkFavorite(let id):
+				return "unmarkFavorite(\(id))"
+		}
+	}
 }

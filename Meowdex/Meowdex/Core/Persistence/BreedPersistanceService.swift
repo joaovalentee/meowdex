@@ -45,23 +45,6 @@ class BreedPersistanceService: BreedPersistanceServiceProtocol {
 		}
 	}
 	
-	func saveImage(url: String, data: Data) {
-		let cached = CachedImage(url: url, data: data)
-		context.insert(cached)
-		saveContext()
-	}
-	
-	func loadImage(url: String) -> Data? {
-		let descriptor = FetchDescriptor<CachedImage>(
-			predicate: #Predicate { $0.url == url }
-		)
-		do {
-			return try context.fetch(descriptor).first?.data
-		} catch {
-			return nil
-		}
-	}
-	
 	
 	// MARK: - Context Save
 	private func saveContext() {

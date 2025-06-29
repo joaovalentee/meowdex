@@ -11,6 +11,4 @@ protocol BreedPersistanceServiceProtocol {
 	func saveBreeds(_ breeds: [CatBreed])
 	func loadBreeds() -> [CatBreed]?
 	func clearBreeds()
-	func saveImage(url: String, data: Data)
-	func loadImage(url: String) -> Data?
 }

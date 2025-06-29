@@ -19,7 +19,7 @@ struct CatBreedDataContainerViewModifier: ViewModifier {
 		populateWith data: [any PersistentModel]? = nil
 	) {
 		self.container = try! ModelContainer(for: SwiftData.Schema(
-			[CatBreed.self, FavouriteBreed.self, Temperament.self, BreedCacheMetadata.self]
+			[CatBreed.self, FavouriteBreed.self, Temperament.self, BreedCacheMetadata.self, FavoritePendingAction.self, User.self]
 		), configurations: [ModelConfiguration(isStoredInMemoryOnly: inMemory)])
 		self.data = data
 		self.inMemory = inMemory

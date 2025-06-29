@@ -13,6 +13,7 @@ import Combine
 
 @Observable
 @MainActor
+/// Binds the data for the favorite breed list view
 class FavoriteBreedListViewModel {
 	
 	// MARK: - Public Properties
@@ -39,6 +40,7 @@ class FavoriteBreedListViewModel {
 		}
 	}
 	
+	/// Holds the observations
 	private var cancellables = Set<AnyCancellable>()
 	
 	// MARK: - Dependencies
@@ -58,9 +60,10 @@ class FavoriteBreedListViewModel {
 	func removeFavorite(id: Int, imageId: String) async {
 		do {
 			try await store.removeFavorite(id: id, imageId: imageId)
+		} catch let e as MeowError {
+			errorMessage = e.localizedDescription
 		} catch {
-			// TODO: handle only known errors
-			errorMessage = error.localizedDescription
+			print("handle error without message: \(error.localizedDescription)")
 		}
 	}
 	
@@ -73,8 +76,10 @@ class FavoriteBreedListViewModel {
 	func refreshFavorites() async {
 		do {
 			_ = try await store.fetchFavorites(forceReload: true)
+		} catch let e as MeowError {
+			errorMessage = e.localizedDescription
 		} catch {
-			errorMessage = error.localizedDescription
+			print("handle error without message: \(error.localizedDescription)")
 		}
 	}
 	

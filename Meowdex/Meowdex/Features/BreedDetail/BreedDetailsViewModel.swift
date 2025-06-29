@@ -10,6 +10,7 @@ import Observation
 
 @Observable
 @MainActor
+/// Binds the data for the breed details view
 class BreedDetailsViewModel {
 	
 	// MARK: - Public Properties
@@ -76,7 +77,6 @@ class BreedDetailsViewModel {
 	}
 	
 	// MARK: - Public Methods
-	
 	func toggleFavorite() async {
 		try? await store.toggleFavorite(imageId: imageId)
 	}

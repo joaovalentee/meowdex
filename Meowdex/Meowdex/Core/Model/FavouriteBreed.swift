@@ -11,7 +11,7 @@ import SwiftData
 /// Favourite cat breeds are stored separated from the CatBreed to allow cache management and to
 /// show the favorites list independent from the list of cat breeds.
 @Model
-class FavouriteBreed {
+class FavouriteBreed: Identifiable {
 	/// A unique identifier associated with the favorite
 	@Attribute(.unique) var id: Int
 	
@@ -87,5 +87,11 @@ class FavouriteBreed {
 			favoriteId: model.id,
 			with: breed
 		)
+	}
+}
+
+extension FavouriteBreed: CustomStringConvertible {
+	var description: String {
+		"\(id) \(breedId) \(breed) \(origin) \(temperament) \(details) \(maxLifespan) \(imageId) \(imageUrl ?? "")"
 	}
 }

@@ -57,24 +57,19 @@ class BreedListViewModel {
 			self?.favouriteIDs = Dictionary(uniqueKeysWithValues: favorites.map { ($0.breedId, $0.id) })
 		}.store(in: &cancellables)
 		
-		store.$breeds.sink { [weak self] breeds in
-			if self?.isLoading == true {
-				self?.isLoading = false
-			}
-			self?.breeds = breeds
-		}.store(in: &cancellables)
+		store.$breeds
+			.dropFirst() // avoids setting loading indicator to false with first publish
+			.sink { [weak self] breeds in
+				print("received breeds \(breeds.count)")
+				if self?.isLoading == true {
+					self?.isLoading = false
+				}
+				self?.breeds = breeds
+			}.store(in: &cancellables)
 	}
 
 	
 	// MARK: - Public Methods
-	func loadBreeds() async {
-		print("loading breeds")
-		if let breeds = try? await store.fetchBreeds() {
-			self.breeds = breeds
-		}
-		
-		isLoading = false
-	}
 	
 	func refreshBreeds() async {
 		print("refreshing breeds")
@@ -113,7 +108,7 @@ class BreedListViewModel {
 		}
 	}
 	
-	func isFavourite(_ breed: CatBreed) -> Bool {
+	func isFavorite(_ breed: CatBreed) -> Bool {
 		favouriteIDs.keys.contains(breed.id)
 	}
 	
