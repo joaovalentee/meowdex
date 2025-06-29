@@ -8,7 +8,7 @@
 import Foundation
 
 struct Favorite: Decodable {
-	let id: String
+	let id: Int
 	let userId: String
 	let imageId: String
 	let subId: String

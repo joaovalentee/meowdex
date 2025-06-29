@@ -72,4 +72,14 @@ class FavouriteBreed {
 			imageId: breed.imageId
 		)
 	}
+	
+	convenience init(
+		from model: Favorite,
+		with breed:  CatBreed
+	) {
+		self.init(
+			favoriteId: model.id,
+			with: breed
+		)
+	}
 }
