@@ -17,6 +17,14 @@ protocol CatBreedAPIService {
 		name: String
 	) async throws -> [Breed]
 	
+	func fetchBreedImage(
+		with id: String
+	) async throws -> ImageResponse
+	
+	func fetchImage(
+		from urlString: String
+	) async throws -> Data
+	
 	func fetchFavorites(
 		userId: String
 	) async throws -> [Favorite]

@@ -14,21 +14,26 @@ class BreedDetailsViewModel {
 	
 	// MARK: - Public Properties
 	private(set) var breed: CatBreed
+	private(set) var isFavorite: Bool
 	
 	// MARK: - Dependencies
 	private let apiService: CatBreedAPIService
-	//private let persistenceService: PersistenceServiceProtocol
+	private let favoritePersistenceService: FavoritePersistenceServiceProtocol
 	
 	// MARK: - Init
 	init(
 		breed: CatBreed,
-		apiService: CatBreedAPIService = TheCatAPIService()
-		//persistenceService: PersistenceServiceProtocol = PersistenceService()
+		apiService: CatBreedAPIService = TheCatAPIService(),
+		favoritePersistenceService: FavoritePersistenceServiceProtocol
 	) {
 		self.breed = breed
 		self.apiService = apiService
-		//self.persistenceService = persistenceService
-		
+		self.favoritePersistenceService = favoritePersistenceService
+		if let imageId = breed.imageId {
+			self.isFavorite = favoritePersistenceService.isFavorite(imageId: imageId)
+		} else {
+			self.isFavorite = false
+		}
 	}
 	
 	// MARK: - Public Methods
@@ -41,11 +46,6 @@ class BreedDetailsViewModel {
 //			favouriteIDs.insert(breed.id)
 //			//			persistenceService.saveFavourite(id: breed.id)
 //		}
-	}
-	
-	func isFavorite(_ breed: CatBreed) -> Bool {
-//		favouriteIDs.contains(breed.id)
-		false
 	}
 	
 	// MARK: - Private Methods

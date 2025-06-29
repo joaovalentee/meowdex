@@ -54,6 +54,27 @@ struct ApiConstants {
 		return buildAuthenticatedRequest(with: url, method: .get)
 	}
 	
+	static func buildGetBreedImageRequest(
+		imageId: String
+	) -> URLRequest? {
+		
+		guard let url = URLComponents(string: "\(baseURL)/images/\(imageId)")?.url else {
+			return nil
+		}
+		
+		return buildAuthenticatedRequest(with: url, method: .get)
+	}
+	
+	static func buildGetImageRequest(
+		from urlString: String
+	) -> URLRequest? {
+		guard let url = URL(string: urlString) else {
+			return nil
+		}
+		
+		return buildAuthenticatedRequest(with: url, method: .get)
+	}
+	
 	static func buildGetFavoritesRequest(
 		userId: String
 	) -> URLRequest? {
