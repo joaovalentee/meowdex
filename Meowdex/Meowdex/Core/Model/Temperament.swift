@@ -18,6 +18,9 @@ final class Temperament {
 	init(name: String) {
 		self.name = name
 	}
+	
+	@Relationship(deleteRule: .cascade, inverse: \CatBreed.temperament)
+	var breeds: [CatBreed] = []
 }
 
 extension Temperament: Identifiable {

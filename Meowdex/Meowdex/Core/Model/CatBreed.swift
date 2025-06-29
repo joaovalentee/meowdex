@@ -32,6 +32,10 @@ class CatBreed: Identifiable {
 	/// The id of the image of the cat breed
 	var imageId: String?
 	
+	var imageUrl: String? = nil
+	
+	var image: CachedImage? = nil
+	
 	/// Creates a new cat breed from the specified values.
 	init(
 		id: String,
@@ -52,11 +56,6 @@ class CatBreed: Identifiable {
 	}
 }
 
-extension CatBreed {
-	var imageUrl: String? {
-		nil
-	}
-}
 
 // A string represenation of the cat breed.
 extension CatBreed: CustomStringConvertible {

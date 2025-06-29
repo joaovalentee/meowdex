@@ -43,6 +43,24 @@ final class TheCatAPIService: CatBreedAPIService {
 		return try await session.get(for: request)
 	}
 	
+	func fetchBreedImage(with id: String) async throws -> ImageResponse {
+		guard let request = ApiConstants.buildGetBreedImageRequest(imageId: id) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		return try await session.get(for: request)
+	}
+	
+	func fetchImage(from urlString: String) async throws -> Data {
+		guard let request = ApiConstants.buildGetImageRequest(from: urlString) else {
+			logger.error("Failed to format URL")
+			throw MeowError.networkError(.badURL)
+		}
+		
+		return try await session.get(for: request)
+	}
+	
 	func fetchFavorites(userId: String) async throws -> [Favorite] {
 		guard let request = ApiConstants.buildGetFavoritesRequest(userId: userId) else {
 			logger.error("Failed to format URL")

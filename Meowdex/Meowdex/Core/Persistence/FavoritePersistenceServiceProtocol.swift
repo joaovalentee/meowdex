@@ -11,4 +11,5 @@ protocol FavoritePersistenceServiceProtocol {
 	func loadFavoriteIDs() async -> [String:Int]
 	func saveFavorite(_ favorite: FavouriteBreed)
 	func removeFavorite(id: Int)
+	func isFavorite(imageId: String) -> Bool
 }

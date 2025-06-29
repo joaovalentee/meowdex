@@ -43,6 +43,18 @@ class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 		}
 	}
 	
+	func isFavorite(imageId: String) -> Bool {
+		let descriptor = FetchDescriptor<FavouriteBreed>(predicate: #Predicate { $0.imageId == imageId })
+		
+		do {
+			let data = try context.fetch(descriptor)
+			return !data.isEmpty
+		} catch {
+			print("Failed to delete favourite with id \(imageId): \(error)")
+			return false
+		}
+	}
+	
 	private func saveContext() {
 		do {
 			try context.save()

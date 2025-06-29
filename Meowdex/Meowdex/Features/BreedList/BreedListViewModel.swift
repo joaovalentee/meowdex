@@ -32,14 +32,17 @@ class BreedListViewModel {
 	// MARK: - Dependencies
 	private let apiService: CatBreedAPIService
 	private let favoritePersistenceService: FavoritePersistenceServiceProtocol
+	private let breedPersistanceService: BreedPersistanceServiceProtocol
 	
 	// MARK: - Init
 	init(
 		apiService: CatBreedAPIService = TheCatAPIService(),
+		breedPersistanceService: BreedPersistanceServiceProtocol,
 		favoritePersistenceService: FavoritePersistenceServiceProtocol
 	) {
 		self.apiService = apiService
 		self.favoritePersistenceService = favoritePersistenceService
+		self.breedPersistanceService = breedPersistanceService
 		Task {
 			await loadBreeds()
 		}
@@ -54,6 +57,7 @@ class BreedListViewModel {
 	) {
 		self.init(
 			apiService: apiService,
+			breedPersistanceService: BreedPersistanceService(context: modelContext),
 			favoritePersistenceService: FavoritePersistenceService(context: modelContext)
 		)
 	}
@@ -66,12 +70,22 @@ class BreedListViewModel {
 		errorMessage = nil
 		
 		do {
-			let breeds = try await apiService.fetchBreeds(page: 0, limit: ApiConstants.breedsPageLimit).compactMap { CatBreed(from: $0) }
-			self.breeds = breeds
-			self.filteredBreeds = breeds
+			if let cached = breedPersistanceService.loadBreeds(),
+			   !cached.isEmpty {
+				print("loaded breeds from cache")
+				self.breeds = cached
+			} else {
+				print("loaded breeds because cache was empty")
+				let breeds = try await apiService.fetchBreeds(page: 0, limit: ApiConstants.breedsPageLimit).compactMap { CatBreed(from: $0) }
+				let processed = try await processBreeds(breeds)
+				
+				self.breeds = processed
+				self.filteredBreeds = processed
+			}
 		} catch {
 			errorMessage = error.localizedDescription
 		}
+		
 		isLoading = false
 	}
 	
@@ -79,8 +93,15 @@ class BreedListViewModel {
 		print("refreshing breeds")
 		do {
 			let breeds = try await apiService.fetchBreeds(page: 0, limit: ApiConstants.breedsPageLimit).compactMap { CatBreed(from: $0) }
-			self.breeds = breeds
-			self.filteredBreeds = breeds
+			
+			if breeds.count > 0 {
+				breedPersistanceService.clearBreeds()
+			}
+			
+			let processed = try await processBreeds(breeds)
+			self.breeds = processed
+			self.filteredBreeds = processed
+			self.hasLoadedAllBreeds = false
 		} catch {
 			errorMessage = error.localizedDescription
 		}
@@ -105,8 +126,8 @@ class BreedListViewModel {
 				hasLoadedAllBreeds = true
 			}
 			
-			
-			self.breeds.append(contentsOf: breeds.compactMap { CatBreed(from: $0) })
+			let catBreeds = try await processBreeds(breeds.compactMap { CatBreed(from: $0) })
+			self.breeds.append(contentsOf: catBreeds)
 		} catch {
 			
 		}
@@ -147,5 +168,40 @@ class BreedListViewModel {
 	
 	func loadFavorites() async {
 		self.favouriteIDs = await favoritePersistenceService.loadFavoriteIDs()
+	}
+	
+	private func processBreeds(_ breeds: [CatBreed]) async throws -> [CatBreed] {
+		var results: [String: ImageResponse] = [:]
+		
+		if !breeds.isEmpty {
+			// Fetch all images
+			try await withThrowingTaskGroup(of: (String, ImageResponse).self) { [apiService] group in
+				for breed in breeds {
+					if breed.image == nil,
+					   let imageId = breed.imageId {
+						group.addTask {
+							let response = try await apiService.fetchBreedImage(with: imageId)
+							return (breed.id, response)
+						}
+					}
+				}
+				
+				for try await (breedId, image) in group {
+					results[breedId] = image
+				}
+			}
+			
+			results.keys.forEach { breedId in
+				if let breed = breeds.first(where: { $0.id == breedId }),
+				   let image = results[breedId] {
+					breed.imageUrl = image.url
+				}
+			}
+			
+			// Persisting breeds
+			breedPersistanceService.saveBreeds(breeds)
+		}
+		
+		return breeds
 	}
 }
