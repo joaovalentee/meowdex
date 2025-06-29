@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct FavoriteBreedListScreen: View {
-	@Environment(\.modelContext) private var modelContext
 	@EnvironmentObject private var store: CatBreedStore
 	
 	@State private var navigation: Navigation<FavoriteNavigationOptions> = Navigation()

@@ -76,11 +76,6 @@ struct FavoriteBreedListView: View {
 		} message: {
 			Text(viewModel.errorMessage ?? "Something went wrong")
 		}
-		.onAppear {
-			Task {
-				await viewModel.syncPendingActions()
-			}
-		}
 	}
 }
 

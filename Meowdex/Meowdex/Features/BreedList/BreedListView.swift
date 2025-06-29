@@ -79,7 +79,7 @@ extension BreedListView {
 			ForEach(breeds) { breed in
 				BreedListItem(
 					breed: breed,
-					isFavorite: viewModel.isFavourite(breed),
+					isFavorite: viewModel.isFavorite(breed),
 					toggleFavoritAction: {
 						await viewModel.toggleFavorite(for: breed)
 					},
@@ -87,11 +87,13 @@ extension BreedListView {
 						navigation.push(.details(breed))
 					}
 				)
-				.task {
-					if let index = breeds.firstIndex(of: breed),
-					   index == breeds.count - 5 {
-						print("Item \(index) appeared — loading next page")
-						await viewModel.loadNextPage()
+				.onAppear {
+					Task {
+						if let index = breeds.firstIndex(of: breed),
+						   index == breeds.count - 5 {
+							print("Item \(index) appeared — loading next page")
+							await viewModel.loadNextPage()
+						}
 					}
 				}
 			}

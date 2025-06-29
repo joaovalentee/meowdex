@@ -32,6 +32,7 @@ class CatBreed: Identifiable {
 	/// The id of the image of the cat breed
 	var imageId: String
 	
+	/// The url of the image
 	var imageUrl: String? = nil
 	
 	/// Creates a new cat breed from the specified values.
