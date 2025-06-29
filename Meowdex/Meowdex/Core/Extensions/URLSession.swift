@@ -108,11 +108,24 @@ extension URLSession {
 	}
 }
 
-enum MeowError: Error {
+enum MeowError: Error, LocalizedError {
 	case networkError(NetworkError)
 	case noInternetConnection
 	case parseError
 	case generic(Error)
+	
+	var errorDescription: String? {
+		switch self {
+			case .networkError(let error):
+				return error.localizedDescription
+			case .noInternetConnection:
+				return "No internet connection"
+			case .parseError:
+				return "Could not parse data"
+			case .generic(let error):
+				return error.localizedDescription
+		}
+	}
 }
 
 enum NetworkError : Error {
@@ -120,4 +133,17 @@ enum NetworkError : Error {
 	case serverError
 	case generalError
 	case badURL
+	
+	var errorDescription: String? {
+		switch self {
+			case .noAPIKey:
+				return "No API key provided"
+			case .serverError:
+				return "Server error"
+			case .generalError:
+				return "General error"
+			case .badURL:
+				return "Bad URL"
+		}
+	}
 }

@@ -9,21 +9,14 @@ import SwiftUI
 
 struct BreedFavoriteButton: View {
 	private let isFavourite: Bool
-	private let onClick: () -> Void
+	private let onClick: () async -> Void
 	
-	init(breed: CatBreed) {
-		isFavourite = false
-		self.onClick = { }
-	}
-	
-	init(favourite: FavouriteBreed) {
-		isFavourite = true
-		self.onClick = { }
-	}
+	@State private var isLoading: Bool = false
+	@State private var task: Task<Void, Never>?
 	
 	init(
 		isFavourite: Bool,
-		onClick: @escaping () -> Void
+		onClick: @escaping () async -> Void
 	) {
 		self.isFavourite = isFavourite
 		self.onClick = onClick
@@ -31,9 +24,21 @@ struct BreedFavoriteButton: View {
 	
 	var body: some View {
 		Button {
-			onClick()
+			if isLoading {
+				task?.cancel()
+				return
+			}
+			task = Task {
+				isLoading = true
+				await onClick()
+				isLoading = false
+			}
 		} label: {
-			FavoriteButtonLabel(isFavourite: isFavourite)
+			if isLoading {
+				ProgressView()
+			} else {
+				FavoriteButtonLabel(isFavourite: isFavourite)
+			}
 		}
 	}
 }
@@ -52,5 +57,7 @@ private struct FavoriteButtonLabel: View {
 }
 
 #Preview {
-	BreedFavoriteButton(breed: CatBreed.preview.first!)
+	BreedFavoriteButton(isFavourite: true) {
+		
+	}
 }

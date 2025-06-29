@@ -30,11 +30,9 @@ class CatBreed: Identifiable {
 	var maxLifespan: Int
 	
 	/// The id of the image of the cat breed
-	var imageId: String?
+	var imageId: String
 	
 	var imageUrl: String? = nil
-	
-	var image: CachedImage? = nil
 	
 	/// Creates a new cat breed from the specified values.
 	init(
@@ -44,7 +42,7 @@ class CatBreed: Identifiable {
 		temperament: [Temperament],
 		details: String,
 		maxLifespan: Int,
-		imageId: String?
+		imageId: String
 	) {
 		self.id = id
 		self.breed = breed
@@ -60,13 +58,14 @@ class CatBreed: Identifiable {
 // A string represenation of the cat breed.
 extension CatBreed: CustomStringConvertible {
 	var description: String {
-		"\(id) \(breed) [\(temperament)] \(origin) \(maxLifespan) \(imageId ?? "") \(details)"
+		"\(id) \(breed) [\(temperament)] \(origin) \(maxLifespan) \(imageId) \(details)"
 	}
 }
 
 extension CatBreed {
 	convenience init?(from model: Breed) {
-		guard let lifespan = model.lifespan.components(separatedBy: " - ").compactMap({ Int($0.trimmingCharacters(in: .whitespaces)) }).max() else {
+		guard let imageId = model.imageId,
+			  let lifespan = model.lifespan.components(separatedBy: " - ").compactMap({ Int($0.trimmingCharacters(in: .whitespaces)) }).max() else {
 			return nil
 		}
 		
@@ -79,7 +78,7 @@ extension CatBreed {
 				.map { Temperament(name: $0.trimmingCharacters(in: .whitespacesAndNewlines)) },
 			details: model.description,
 			maxLifespan: lifespan,
-			imageId: model.imageId
+			imageId: imageId
 		)
 	}
 }

@@ -14,6 +14,9 @@ struct MeowdexApp: App {
         WindowGroup {
             ContentView()
 				.catBreedsDataContainer()
+				.onAppear {
+					print("\(URL.applicationSupportDirectory.path(percentEncoded: false))")
+				}
         }
     }
 }

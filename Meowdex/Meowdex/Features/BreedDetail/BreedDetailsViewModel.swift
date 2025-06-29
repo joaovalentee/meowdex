@@ -13,41 +13,71 @@ import Observation
 class BreedDetailsViewModel {
 	
 	// MARK: - Public Properties
-	private(set) var breed: CatBreed
-	private(set) var isFavorite: Bool
+	private(set) var imageUrl: String?
+	private(set) var imageId: String
+	private(set) var name: String
+	private(set) var temperament: [Temperament]
+	private(set) var origin: String
+	private(set) var description: String
+	var isFavorite: Bool {
+		store.isFavorite(imageId: imageId)
+	}
 	
 	// MARK: - Dependencies
-	private let apiService: CatBreedAPIService
-	private let favoritePersistenceService: FavoritePersistenceServiceProtocol
+	private let store: CatBreedStore
 	
 	// MARK: - Init
 	init(
-		breed: CatBreed,
-		apiService: CatBreedAPIService = TheCatAPIService(),
-		favoritePersistenceService: FavoritePersistenceServiceProtocol
+		imageUrl: String?,
+		name: String,
+		imageId: String,
+		temperament: [Temperament],
+		origin: String,
+		description: String,
+		store: CatBreedStore
 	) {
-		self.breed = breed
-		self.apiService = apiService
-		self.favoritePersistenceService = favoritePersistenceService
-		if let imageId = breed.imageId {
-			self.isFavorite = favoritePersistenceService.isFavorite(imageId: imageId)
-		} else {
-			self.isFavorite = false
-		}
+		self.imageUrl = imageUrl
+		self.name = name
+		self.temperament = temperament
+		self.origin = origin
+		self.description = description
+		self.store = store
+		self.imageId = imageId
+	}
+	
+	convenience init(
+		breed: CatBreed,
+		store: CatBreedStore
+	) {
+		self.init(
+			imageUrl: breed.imageUrl,
+			name: breed.breed,
+			imageId: breed.imageId,
+			temperament: breed.temperament,
+			origin: breed.origin,
+			description: breed.details,
+			store: store
+		)
+	}
+	
+	convenience init(
+		favorite: FavouriteBreed,
+		store: CatBreedStore
+	) {
+		self.init(
+			imageUrl: favorite.imageUrl,
+			name: favorite.breed,
+			imageId: favorite.imageId,
+			temperament: favorite.temperament,
+			origin: favorite.origin,
+			description: favorite.details,
+			store: store
+		)
 	}
 	
 	// MARK: - Public Methods
 	
-	func toggleFavourite(for breed: CatBreed) {
-//		if favouriteIDs.contains(breed.id) {
-//			favouriteIDs.remove(breed.id)
-//			//			persistenceService.removeFavourite(id: breed.id)
-//		} else {
-//			favouriteIDs.insert(breed.id)
-//			//			persistenceService.saveFavourite(id: breed.id)
-//		}
+	func toggleFavorite() async {
+		try? await store.toggleFavorite(imageId: imageId)
 	}
-	
-	// MARK: - Private Methods
-	
 }
