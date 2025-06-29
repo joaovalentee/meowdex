@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 import Observation
 
 @Observable
@@ -30,18 +31,31 @@ class BreedListViewModel {
 	
 	// MARK: - Dependencies
 	private let apiService: CatBreedAPIService
-	//private let persistenceService: PersistenceServiceProtocol
+	private let favoritePersistenceService: FavoritePersistenceServiceProtocol
 	
 	// MARK: - Init
 	init(
-		apiService: CatBreedAPIService = TheCatAPIService()
-		//persistenceService: PersistenceServiceProtocol = PersistenceService()
+		apiService: CatBreedAPIService = TheCatAPIService(),
+		favoritePersistenceService: FavoritePersistenceServiceProtocol
 	) {
 		self.apiService = apiService
-		//self.persistenceService = persistenceService
+		self.favoritePersistenceService = favoritePersistenceService
 		Task {
 			await loadBreeds()
 		}
+		Task {
+			await loadFavorites()
+		}
+	}
+	
+	convenience init(
+		apiService: CatBreedAPIService = TheCatAPIService(),
+		modelContext: ModelContext
+	) {
+		self.init(
+			apiService: apiService,
+			favoritePersistenceService: FavoritePersistenceService(context: modelContext)
+		)
 	}
 	
 	// MARK: - Public Methods
@@ -106,7 +120,7 @@ class BreedListViewModel {
 				do {
 					try await apiService.removeFavorite(favoriteId: favouriteId)
 					favouriteIDs.removeValue(forKey: breed.id)
-//					persistenceService.removeFavourite(id: breed.id)
+					favoritePersistenceService.removeFavorite(id: favouriteId)
 				} catch {
 					
 				}
@@ -114,7 +128,7 @@ class BreedListViewModel {
 				do {
 					let id = try await apiService.addFavorite(imageId: imageId, userId: userId)
 					favouriteIDs[breed.id] = id
-//					persistenceService.saveFavourite(id: breed.id)
+					favoritePersistenceService.saveFavorite(FavouriteBreed(favoriteId: id, with: breed))
 				} catch {
 					
 				}
@@ -129,5 +143,9 @@ class BreedListViewModel {
 	// MARK: - Private Methods
 	func filterBreeds() {
 		
+	}
+	
+	func loadFavorites() async {
+		self.favouriteIDs = await favoritePersistenceService.loadFavoriteIDs()
 	}
 }

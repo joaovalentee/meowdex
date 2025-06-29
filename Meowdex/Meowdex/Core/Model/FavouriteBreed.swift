@@ -31,7 +31,7 @@ class FavouriteBreed {
 	var maxLifespan: Int
 	
 	/// The id of the image of the cat breed
-	var imageId: String
+	var imageId: String?
 	
 	/// The id of the favourite
 	var favouriteId: Int
@@ -45,7 +45,7 @@ class FavouriteBreed {
 		temperament: [Temperament],
 		details: String,
 		maxLifespan: Int,
-		imageId: String
+		imageId: String?
 	) {
 		self.id = id
 		self.favouriteId = favouriteId
@@ -55,5 +55,21 @@ class FavouriteBreed {
 		self.details = details
 		self.maxLifespan = maxLifespan
 		self.imageId = imageId
+	}
+	
+	convenience init(
+		favoriteId: Int,
+		with breed: CatBreed
+	) {
+		self.init(
+			id: breed.id,
+			favouriteId: favoriteId,
+			breed: breed.breed,
+			origin: breed.origin,
+			temperament: breed.temperament,
+			details: breed.details,
+			maxLifespan: breed.maxLifespan,
+			imageId: breed.imageId
+		)
 	}
 }
