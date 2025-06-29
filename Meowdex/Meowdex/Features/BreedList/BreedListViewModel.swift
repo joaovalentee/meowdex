@@ -17,16 +17,29 @@ class BreedListViewModel {
 	private(set) var breeds: [CatBreed] = []
 	private(set) var hasLoadedAllBreeds: Bool = false
 	private(set) var filteredBreeds: [CatBreed] = []
-	private(set) var searchQuery: String = "" {
+	var searchQuery: String = "" {
 		didSet {
-			filterBreeds()
+			if !isLoadingSearch && !searchQuery.isEmpty {
+				isLoadingSearch = true
+			}
+			debounceTask?.cancel()
+			debounceTask = Task {
+				try? await Task.sleep(for: .milliseconds(300))
+				if !Task.isCancelled {
+					await filterBreeds()
+				}
+			}
 		}
 	}
 	private(set) var isLoading: Bool = true
+	private(set) var isLoadingSearch: Bool = false
 	private(set) var isLoadingMore: Bool = false
 	private(set) var errorMessage: String? = nil
 	private(set) var favouriteIDs: [String:Int] = [:]
 	
+	
+	// MARK: - Internal
+	private var debounceTask: Task<Void, Never>?
 	private var userId: String = "aabbccdd"
 	
 	// MARK: - Dependencies
@@ -161,9 +174,33 @@ class BreedListViewModel {
 		favouriteIDs.keys.contains(breed.id)
 	}
 	
+	func clearSearch() {
+		print("Clearing search")
+		self.filteredBreeds = []
+	}
+	
 	// MARK: - Private Methods
-	func filterBreeds() {
+	func filterBreeds() async {
+		print("Searching by \(searchQuery)")
 		
+		guard !searchQuery.isEmpty else {
+			self.filteredBreeds = []
+			return
+		}
+		
+		do {
+			let breeds = try await apiService.searchBreeds(name: searchQuery).compactMap { CatBreed(from: $0) }
+			
+			try Task.checkCancellation()
+			
+			self.filteredBreeds = try await processBreeds(breeds)
+			self.isLoadingSearch = false
+		} catch {
+			//self.errorMessage = error.localizedDescription
+			// TODO: check if no internet connection and search offline
+			self.isLoadingSearch = false
+			self.filteredBreeds = []
+		}
 	}
 	
 	func loadFavorites() async {
