@@ -10,13 +10,13 @@ import SwiftData
 
 @main
 struct MeowdexApp: App {
+	/// Monitors the internet connectivity
+	@State private var networkMonitor = NetworkMonitor.shared
+	
     var body: some Scene {
         WindowGroup {
             ContentView()
-				.catBreedsDataContainer()
-				.onAppear {
-					print("\(URL.applicationSupportDirectory.path(percentEncoded: false))")
-				}
+				.environment(\.isNetworkConnected, networkMonitor.isConnected)
         }
     }
 }

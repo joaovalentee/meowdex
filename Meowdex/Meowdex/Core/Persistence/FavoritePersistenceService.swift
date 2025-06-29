@@ -10,7 +10,6 @@ import SwiftData
 
 class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 	
-	
 	private let context: ModelContext
 	
 	init(context: ModelContext) {
@@ -33,6 +32,7 @@ class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 	}
 	
 	func saveFavorites(_ favorites: [FavouriteBreed]) {
+		print("saving favorites \(favorites)")
 		for favorite in favorites {
 			context.insert(favorite)
 		}
@@ -42,9 +42,7 @@ class FavoritePersistenceService: FavoritePersistenceServiceProtocol {
 	func savePendingAction(_ action: FavoritePendingAction) throws {
 		print("Saving action \(action)")
 		context.insert(action)
-		print("Inserted action")
 		try context.save()
-		print("Saved action")
 	}
 	
 	func loadPendingActions() throws -> [FavoritePendingAction]? {

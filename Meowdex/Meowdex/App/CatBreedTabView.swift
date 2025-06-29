@@ -9,15 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct CatBreedTabView: View {
+	@Environment(\.isNetworkConnected) private var hasNetworkConnection
+	
 	@StateObject private var store: CatBreedStore
 	
-	init(modelContext: ModelContext) {
+	init() {
+		let container = try! ModelContainer(for: SwiftData.Schema(
+			[CatBreed.self, FavouriteBreed.self, Temperament.self, BreedCacheMetadata.self, FavoritePendingAction.self, User.self]
+		), configurations: [ModelConfiguration(isStoredInMemoryOnly: false)])
 		_store = StateObject(
 			wrappedValue: CatBreedStore(
 				user: User(username: "aabbccdd"),
 				apiService: TheCatAPIService(),
-				breedPersistenceService: BreedPersistanceService(context: modelContext),
-				favoritePersistenceService: FavoritePersistenceService(context: modelContext)
+				breedPersistenceService: BreedPersistanceService(context: container.mainContext),
+				favoritePersistenceService: FavoritePersistenceService(context: container.mainContext)
 			)
 		)
 	}
@@ -31,9 +36,12 @@ struct CatBreedTabView: View {
 			}
 		}
 		.environmentObject(store)
+		.onChange(of: hasNetworkConnection) { oldValue, newValue in
+			if oldValue != newValue && newValue {
+				Task {
+					await store.syncPendingActions()					
+				}
+			}
+		}
     }
 }
-
-//#Preview {
-//    CatBreedTabView()
-//}
